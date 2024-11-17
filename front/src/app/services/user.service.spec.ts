@@ -88,7 +88,7 @@ describe('UserService', () => {
 
 			const req = httpMock.expectOne('api/user/999');
 			expect(req.request.method).toBe('DELETE');
-			req.flush({ message: 'User not found' }, { status: 404, statusText: 'Not Found'});
+			req.flush({ message: 'User not found' }, { status: 404, statusText: 'Not Found' });
 		});
 	});
 });
