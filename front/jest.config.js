@@ -12,7 +12,7 @@ module.exports = {
   coveragePathIgnorePatterns: ['<rootDir>/node_modules/'],
   coverageThreshold: {
     global: {
-      statements: 85
+      statements: 90
     },
   },
   roots: [
