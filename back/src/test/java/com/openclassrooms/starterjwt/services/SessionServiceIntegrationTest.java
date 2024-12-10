@@ -69,7 +69,7 @@ public class SessionServiceIntegrationTest {
     @Test
     public void testCreate() {
         Session newSession = Session.builder()
-            .name("Created Yoga session")
+            .name("Yoga session")
             .date(new Date())
             .description("Session created !")
             .users(new ArrayList<>())
@@ -79,14 +79,14 @@ public class SessionServiceIntegrationTest {
 
         assertThat(createdSession).isNotNull();
         assertThat(createdSession.getId()).isNotNull(); // ID généré automatiquement
-        assertThat(createdSession.getName()).isEqualTo("Created Yoga session");
+        assertThat(createdSession.getName()).isEqualTo("Yoga session");
         assertThat(createdSession.getDescription()).isEqualTo("Session created !");
     
         // Vérification depuis la DB
         Session fromDBSession = sessionRepository.findById(createdSession.getId()).orElse(null);
 
         assertThat(fromDBSession).isNotNull();
-        assertThat(fromDBSession.getName()).isEqualTo("Created Yoga session");
+        assertThat(fromDBSession.getName()).isEqualTo("Yoga session");
         assertThat(fromDBSession.getDescription()).isEqualTo("Session created !");
     }
 
