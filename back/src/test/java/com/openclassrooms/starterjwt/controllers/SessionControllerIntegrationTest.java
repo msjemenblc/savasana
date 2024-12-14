@@ -7,18 +7,19 @@ import com.openclassrooms.starterjwt.models.Session;
 import com.openclassrooms.starterjwt.models.User;
 import com.openclassrooms.starterjwt.repository.SessionRepository;
 import com.openclassrooms.starterjwt.repository.UserRepository;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
 import java.util.Date;
+
+import javax.transaction.Transactional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -30,8 +31,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @AutoConfigureMockMvc
+@Transactional
 public class SessionControllerIntegrationTest {
 
     @Autowired
@@ -44,23 +45,15 @@ public class SessionControllerIntegrationTest {
     private UserRepository userRepository;
 
     private Session session1;
-    private Session session2;
 
     private User user;
 
-    @BeforeAll
-    public void beforeAll() {
+    @BeforeEach
+    public void beforeEach() {
         session1 = Session.builder()
             .name("Yoga session")
             .date(new Date())
             .description("Relaxing yoga session !")
-            .users(new ArrayList<>())
-            .build();
-
-        session2 = Session.builder()
-            .name("Yoga lesson")
-            .date(new Date())
-            .description("Cool yoga session !")
             .users(new ArrayList<>())
             .build();
 
@@ -73,7 +66,6 @@ public class SessionControllerIntegrationTest {
             .build();
 
         sessionRepository.save(session1);
-        sessionRepository.save(session2);
         userRepository.save(user);
     }
 
@@ -111,8 +103,8 @@ public class SessionControllerIntegrationTest {
         sessionDto.setUsers(new ArrayList<>());
 
         mockMvc.perform(post("/api/session")
-            .contentType("application/json")
-            .content(new ObjectMapper().writeValueAsString(sessionDto)))
+                .contentType("application/json")
+                .content(new ObjectMapper().writeValueAsString(sessionDto)))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.name").value("New Session"))
             .andExpect(jsonPath("$.description").value("Session created !"));
@@ -124,8 +116,8 @@ public class SessionControllerIntegrationTest {
         SessionDto sessionDto = new SessionDto();
 
         mockMvc.perform(post("/api/session")
-            .contentType("application/json")
-            .content(new ObjectMapper().writeValueAsString(sessionDto)))
+                .contentType("application/json")
+                .content(new ObjectMapper().writeValueAsString(sessionDto)))
             .andExpect(status().isBadRequest());
     }
 
@@ -149,8 +141,8 @@ public class SessionControllerIntegrationTest {
         objectMapper.registerModule(new JavaTimeModule());
 
         mockMvc.perform(put("/api/session/" + toUpdateSession.getId())
-            .contentType("application/json")
-            .content(objectMapper.writeValueAsString(updatedSessionDto)))
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(updatedSessionDto)))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.name").value("testece"));
     }
@@ -161,8 +153,8 @@ public class SessionControllerIntegrationTest {
         SessionDto sessionDto = new SessionDto();
 
         mockMvc.perform(put("/api/session/abc")
-            .contentType("application/json")
-            .content(new ObjectMapper().writeValueAsString(sessionDto)))
+                .contentType("application/json")
+                .content(new ObjectMapper().writeValueAsString(sessionDto)))
             .andExpect(status().isBadRequest())
             .andExpect(content().string(""))
             .andExpect(jsonPath("$.message").doesNotExist());

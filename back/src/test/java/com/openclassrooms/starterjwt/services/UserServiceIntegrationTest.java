@@ -2,19 +2,20 @@ package com.openclassrooms.starterjwt.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.jupiter.api.BeforeAll;
+import javax.transaction.Transactional;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
 
 import com.openclassrooms.starterjwt.models.User;
 import com.openclassrooms.starterjwt.repository.UserRepository;
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@Transactional
 public class UserServiceIntegrationTest {
 
     @Autowired
@@ -25,8 +26,8 @@ public class UserServiceIntegrationTest {
 
     private User user;
 
-    @BeforeAll
-    public void beforeAll() {
+    @BeforeEach
+    public void beforeEach() {
         user = User.builder()
             .email("john.doe@test.com")
             .firstName("John")

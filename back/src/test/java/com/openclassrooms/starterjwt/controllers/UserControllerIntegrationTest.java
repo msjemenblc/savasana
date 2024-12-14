@@ -3,14 +3,15 @@ package com.openclassrooms.starterjwt.controllers;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.junit.jupiter.api.BeforeAll;
+import javax.transaction.Transactional;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.openclassrooms.starterjwt.models.User;
@@ -18,8 +19,8 @@ import com.openclassrooms.starterjwt.repository.UserRepository;
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @AutoConfigureMockMvc
+@Transactional
 public class UserControllerIntegrationTest {
 
     @Autowired
@@ -30,8 +31,8 @@ public class UserControllerIntegrationTest {
 
     private User user;
 
-    @BeforeAll
-    public void beforeAll() {
+    @BeforeEach
+    public void beforeEach() {
         user = User.builder()
             .email("john.doe@test.com")
             .firstName("John")

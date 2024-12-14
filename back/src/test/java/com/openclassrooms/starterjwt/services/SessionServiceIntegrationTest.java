@@ -5,12 +5,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import org.junit.jupiter.api.BeforeAll;
+import javax.transaction.Transactional;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
 
 import com.openclassrooms.starterjwt.models.Session;
 import com.openclassrooms.starterjwt.models.User;
@@ -19,7 +20,7 @@ import com.openclassrooms.starterjwt.repository.UserRepository;
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@Transactional
 public class SessionServiceIntegrationTest {
 
     @Autowired 
@@ -32,23 +33,15 @@ public class SessionServiceIntegrationTest {
     private UserRepository userRepository;
 
     private Session session1;
-    private Session session2;
 
     private User user;
 
-    @BeforeAll
-    public void beforeAll() {
+    @BeforeEach
+    public void beforeEach() {
         session1 = Session.builder()
             .name("Yoga session")
             .date(new Date())
             .description("Relaxing yoga session !")
-            .users(new ArrayList<>())
-            .build();
-
-        session2 = Session.builder()
-            .name("Yoga lesson")
-            .date(new Date())
-            .description("Cool yoga session !")
             .users(new ArrayList<>())
             .build();
 
@@ -61,7 +54,6 @@ public class SessionServiceIntegrationTest {
             .build();
 
         sessionRepository.save(session1);
-        sessionRepository.save(session2);
 
         userRepository.save(user);
     }
@@ -88,17 +80,18 @@ public class SessionServiceIntegrationTest {
         assertThat(fromDBSession).isNotNull();
         assertThat(fromDBSession.getName()).isEqualTo("Yoga session");
         assertThat(fromDBSession.getDescription()).isEqualTo("Session created !");
+
     }
 
     @Test
     public void testDelete() {
-        Session sessionBeforeDelete = sessionRepository.findById(session2.getId()).orElse(null);
+        Session sessionBeforeDelete = sessionRepository.findById(session1.getId()).orElse(null);
 
         assertThat(sessionBeforeDelete).isNotNull();
 
-        sessionService.delete(session2.getId());
+        sessionService.delete(session1.getId());
 
-        Session sessionAfterDelete = sessionRepository.findById(session2.getId()).orElse(null);
+        Session sessionAfterDelete = sessionRepository.findById(session1.getId()).orElse(null);
 
         assertThat(sessionAfterDelete).isNull();
     }
