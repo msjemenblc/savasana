@@ -85,9 +85,11 @@ Vous pouvez vous connectez avec des identifiants admin générés par défaut :
 ### Générer les rapports de tests
 - Front-end : npm test
 - Front-end (visualiser le coverage) : npm test -- --coverage
+![Coverage du front-end](coverage_results/front-end_coverage.png)
 
 - end-2-end : npx cypress open
 
 - Back-end : mvn test ou mvn clean test
 - Back-end (visualiser le coverage) : mvn jacoco:report
 -> Allez ensuite dans /back/target/site/jacoco/index.html pour obtenir le tableau
+![Coverage du back-end](coverage_results/back-end_coverage.png)
